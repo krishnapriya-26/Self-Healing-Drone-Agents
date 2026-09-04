@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Autonomous Drone Mission Control</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: white;
+            padding: 25px;
+        }
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+        }
+
+        .header p {
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+
+        .button-container {
+            margin-bottom: 25px;
+        }
+
+        button {
+            background: #2563eb;
+            border: none;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+
+        .card h3 {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .section {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            margin-bottom: 15px;
+            font-size: 19px;
+        }
+
+        pre {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            color: #cbd5e1;
+        }
+
+        .status {
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #166534;
+        }
+
+        .warning {
+            background: #92400e;
+        }
+
+        .danger {
+            background: #991b1b;
+        }
+
+        @media(max-width: 900px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+
+        <h1>🚁 Autonomous Drone Mission Control</h1>
+
+        <p>
+            Self-Healing Multi-Agent Drone Operations & Mission Recovery Platform
+        </p>
+
+    </div>
+
+
+    <div class="button-container">
+
+        <button onclick="runMission()">
+            ▶ Run Autonomous Mission
+        </button>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>DRONE ID</h3>
+            <div class="value" id="droneId">---</div>
+        </div>
+
+        <div class="card">
+            <h3>BATTERY</h3>
+            <div class="value" id="battery">---</div>
+        </div>
+
+        <div class="card">
+            <h3>TEMPERATURE</h3>
+            <div class="value" id="temperature">---</div>
+        </div>
+
+        <div class="card">
+            <h3>ALTITUDE</h3>
+            <div class="value" id="altitude">---</div>
+        </div>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>GPS</h3>
+            <div id="gps" class="status">---</div>
+        </div>
+
+        <div class="card">
+            <h3>MOTOR</h3>
+            <div id="motor" class="status">---</div>
+        </div>
+
+        <div class="card">
+            <h3>SCENARIO</h3>
+            <div id="scenario" class="status">---</div>
+        </div>
+
+        <div class="card">
+            <h3>SAFETY</h3>
+            <div id="safety" class="status">---</div>
+        </div>
+
+    </div>
+
+
+    <div class="section">
+
+        <h2>🧠 RAG Knowledge Retrieved</h2>
+
+        <pre id="knowledge">
+No mission has been executed yet.
+        </pre>
+
+    </div>
+
+
+    <div class="section">
+
+        <h2>🔄 Recovery Plan</h2>
+
+        <pre id="recovery">
+No recovery plan available.
+        </pre>
+
+    </div>
+
+
+    <div class="section">
+
+        <h2>🛡️ Safety Decision</h2>
+
+        <pre id="safetyResult">
+No safety decision available.
+        </pre>
+
+    </div>
+
+
+    <script>
+
+        async function runMission() {
+
+            try {
+
+                const response = await fetch("/mission/run", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        drone_id: "DRONE-01"
+                    })
+
+                });
+
+
+                const data = await response.json();
+
+
+                console.log(data);
+
+
+                const telemetry = data.telemetry || {};
+
+
+                document.getElementById("droneId").textContent =
+                    data.drone_id || "---";
+
+
+                document.getElementById("battery").textContent =
+                    telemetry.battery !== undefined
+                        ? telemetry.battery + "%"
+                        : "---";
+
+
+                document.getElementById("temperature").textContent =
+                    telemetry.temperature !== undefined
+                        ? telemetry.temperature + " °C"
+                        : "---";
+
+
+                document.getElementById("altitude").textContent =
+                    telemetry.altitude !== undefined
+                        ? telemetry.altitude + " m"
+                        : "---";
+
+
+                document.getElementById("gps").textContent =
+                    telemetry.gps || "---";
+
+
+                document.getElementById("motor").textContent =
+                    telemetry.motor || "---";
+
+
+                document.getElementById("scenario").textContent =
+                    telemetry.scenario || "---";
+
+
+                document.getElementById("knowledge").textContent =
+                    JSON.stringify(data.knowledge || [], null, 2);
+
+
+                document.getElementById("recovery").textContent =
+                    JSON.stringify(data.recovery_plan || {}, null, 2);
+
+
+                document.getElementById("safetyResult").textContent =
+                    JSON.stringify(data.safety_result || {}, null, 2);
+
+
+                const safety = data.safety_result || {};
+
+                const safetyElement =
+                    document.getElementById("safety");
+
+
+                safetyElement.textContent =
+                    safety.status ||
+                    safety.action ||
+                    "CHECKED";
+
+
+                safetyElement.className = "status warning";
+
+
+                if (
+                    JSON.stringify(safety)
+                        .toLowerCase()
+                        .includes("continue")
+                ) {
+
+                    safetyElement.className =
+                        "status success";
+
+                }
+
+
+                if (
+                    JSON.stringify(safety)
+                        .toLowerCase()
+                        .includes("human")
+                ) {
+
+                    safetyElement.className =
+                        "status danger";
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Could not connect to the drone API. Make sure the FastAPI server is running."
+                );
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

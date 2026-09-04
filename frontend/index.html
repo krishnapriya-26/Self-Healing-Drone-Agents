@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Self-Healing Drone Mission Control</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+
+        <div>
+            <h1>🚁 Self-Healing Drone</h1>
+            <p>Multi-Agent Mission Control Platform</p>
+        </div>
+
+        <div class="system-status">
+            <span class="status-dot"></span>
+            SYSTEM ONLINE
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <!-- ============================= -->
+        <!-- DRONE INFORMATION -->
+        <!-- ============================= -->
+
+        <section class="section">
+
+            <h2>Drone Information</h2>
+
+            <div class="cards">
+
+                <div class="card">
+                    <span>Drone ID</span>
+                    <strong id="droneId">DRONE-01</strong>
+                </div>
+
+                <div class="card">
+                    <span>Mission</span>
+                    <strong id="mission">Solar Panel Inspection</strong>
+                </div>
+
+                <div class="card">
+                    <span>Battery</span>
+                    <strong id="battery">-- %</strong>
+                </div>
+
+                <div class="card">
+                    <span>Temperature</span>
+                    <strong id="temperature">-- °C</strong>
+                </div>
+
+                <div class="card">
+                    <span>GPS</span>
+                    <strong id="gps">--</strong>
+                </div>
+
+                <div class="card">
+                    <span>Motor</span>
+                    <strong id="motor">--</strong>
+                </div>
+
+                <div class="card">
+                    <span>Altitude</span>
+                    <strong id="altitude">-- m</strong>
+                </div>
+
+                <div class="card">
+                    <span>Scenario</span>
+                    <strong id="scenario">--</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ============================= -->
+        <!-- MISSION CONTROL -->
+        <!-- ============================= -->
+
+        <section class="control-section">
+
+            <h2>Mission Control</h2>
+
+            <button id="runButton" onclick="runMission()">
+                ▶ RUN MISSION
+            </button>
+
+            <div id="loading" class="loading hidden">
+                Running multi-agent workflow...
+            </div>
+
+        </section>
+
+
+        <!-- ============================= -->
+        <!-- AI AGENT PIPELINE -->
+        <!-- ============================= -->
+
+        <section class="section">
+
+            <h2>AI Agent Pipeline</h2>
+
+            <div class="agents">
+
+                <div class="agent">
+                    <div class="agent-number">1</div>
+
+                    <div>
+                        <strong>Telemetry Agent</strong>
+                        <p>Collects drone telemetry</p>
+                    </div>
+                </div>
+
+                <div class="arrow">↓</div>
+
+
+                <div class="agent">
+                    <div class="agent-number">2</div>
+
+                    <div>
+                        <strong>Diagnosis Agent</strong>
+                        <p>Identifies drone problems</p>
+                    </div>
+                </div>
+
+                <div class="arrow">↓</div>
+
+
+                <div class="agent">
+                    <div class="agent-number">3</div>
+
+                    <div>
+                        <strong>RAG Knowledge Agent</strong>
+                        <p>Retrieves relevant procedures</p>
+                    </div>
+                </div>
+
+                <div class="arrow">↓</div>
+
+
+                <div class="agent">
+                    <div class="agent-number">4</div>
+
+                    <div>
+                        <strong>Mission Memory</strong>
+                        <p>Uses previous mission information</p>
+                    </div>
+                </div>
+
+                <div class="arrow">↓</div>
+
+
+                <div class="agent">
+                    <div class="agent-number">5</div>
+
+                    <div>
+                        <strong>Recovery Agent</strong>
+                        <p>Creates recovery plan</p>
+                    </div>
+                </div>
+
+                <div class="arrow">↓</div>
+
+
+                <div class="agent">
+                    <div class="agent-number">6</div>
+
+                    <div>
+                        <strong>Safety Agent</strong>
+                        <p>Validates autonomous action</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ============================= -->
+        <!-- MISSION DECISION -->
+        <!-- ============================= -->
+
+        <section class="section">
+
+            <h2>Mission Decision</h2>
+
+            <div id="decisionBox" class="decision-box">
+                Waiting for mission execution...
+            </div>
+
+
+            <div class="result-grid">
+
+                <!-- DIAGNOSIS -->
+
+                <div class="result-card">
+
+                    <h3>🩺 Diagnosis</h3>
+
+                    <pre id="diagnosis">
+No diagnosis available.
+                    </pre>
+
+                </div>
+
+
+                <!-- RECOVERY -->
+
+                <div class="result-card">
+
+                    <h3>🔧 Recovery Plan</h3>
+
+                    <pre id="recovery">
+No recovery plan available.
+                    </pre>
+
+                </div>
+
+
+                <!-- SAFETY -->
+
+                <div class="result-card">
+
+                    <h3>🛡️ Safety Result</h3>
+
+                    <pre id="safety">
+No safety result available.
+                    </pre>
+
+                </div>
+
+
+                <!-- RAG -->
+
+                <div class="result-card">
+
+                    <h3>📚 RAG Knowledge</h3>
+
+                    <pre id="knowledge">
+No knowledge retrieved.
+                    </pre>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            Self-Healing Multi-Agent Drone Operations
+            & Mission Recovery Platform
+        </p>
+
+    </footer>
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>

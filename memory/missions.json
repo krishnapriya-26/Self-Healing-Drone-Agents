@@ -1,0 +1,10 @@
+[
+    {
+        "timestamp": "2026-09-03T23:40:58.942269",
+        "drone_id": "DRONE-01",
+        "scenario": "MOTOR_FAILURE",
+        "diagnosis": "Critical motor failure detected. Continuing the inspection mission may compromise flight stability.",
+        "action": "ABORT_MISSION",
+        "result": "HUMAN_APPROVAL_REQUIRED"
+    }
+]

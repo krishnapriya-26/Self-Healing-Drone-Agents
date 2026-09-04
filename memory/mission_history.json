@@ -1,0 +1,10 @@
+[
+    {
+        "drone_id": "DRONE-TEST",
+        "scenario": "GPS_FAILURE",
+        "diagnosis": "GPS signal lost",
+        "action": "HOLD_AND_REQUEST_HUMAN",
+        "result": "HUMAN_APPROVAL_REQUIRED",
+        "timestamp": "2026-09-03T23:48:09.692467"
+    }
+]

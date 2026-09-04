@@ -1,0 +1,17 @@
+Drone Motor Failure Procedure
+
+Motor failure is a critical flight safety condition.
+
+When a motor failure is detected, the drone should not continue a normal inspection mission.
+
+The system should evaluate flight stability and remaining motor capability.
+
+Recommended recovery actions include:
+1. Stop the inspection mission.
+2. Reduce unnecessary movement.
+3. Evaluate flight stability.
+4. Initiate Return-To-Home if stable flight is possible.
+5. If stable flight is not possible, identify the nearest safe landing area.
+6. Request human approval for high-risk recovery actions.
+
+Mission continuation should be blocked when motor failure creates an unsafe flight condition.

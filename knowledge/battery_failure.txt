@@ -1,0 +1,20 @@
+Drone Battery Failure Procedure
+
+A drone with battery below 20 percent should be treated as a critical low-battery condition.
+
+The drone should stop non-essential mission activities.
+
+If sufficient battery remains, the drone should return to the nearest safe landing location or initiate Return-To-Home.
+
+The recovery system should calculate whether the remaining battery is sufficient for the planned recovery action.
+
+If battery level is critically low, mission continuation should not be allowed.
+
+A human operator should be notified when the estimated recovery margin is unsafe.
+
+Recommended actions:
+1. Pause the current inspection.
+2. Stop non-essential processing.
+3. Check the current drone location.
+4. Initiate Return-To-Home when safe.
+5. Request human intervention if the battery is critically low.

@@ -1,0 +1,16 @@
+Drone GPS Failure Procedure
+
+Loss of GPS can make autonomous navigation unreliable.
+
+When GPS becomes unavailable, the drone should stop normal autonomous navigation.
+
+The system should determine whether an alternative navigation method is available.
+
+Recommended actions:
+1. Pause the current inspection mission.
+2. Check GPS signal recovery.
+3. Maintain a safe altitude when possible.
+4. Use alternative navigation or localization if available.
+5. Request human intervention when autonomous navigation cannot be trusted.
+
+The drone should not continue an autonomous mission when reliable navigation cannot be established.

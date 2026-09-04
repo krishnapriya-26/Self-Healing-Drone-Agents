@@ -1,0 +1,15 @@
+Drone Overheating Procedure
+
+High temperature can indicate motor, battery, processor, or environmental problems.
+
+A temperature above 80 degrees Celsius should be considered a critical overheating condition.
+
+Recommended actions:
+1. Reduce mission workload.
+2. Stop non-essential processing.
+3. Monitor temperature continuously.
+4. Reduce altitude or movement when appropriate.
+5. Initiate Return-To-Home if temperature continues increasing.
+6. Request human intervention if the temperature reaches an unsafe level.
+
+The system should not continue a normal inspection mission during severe overheating.
