@@ -4,3 +4,4 @@ pydantic
 langgraph
 langchain
 langchain-core
+python-dotenv
