@@ -1,1 +1,1 @@
-from main import api
+from main import api as app
