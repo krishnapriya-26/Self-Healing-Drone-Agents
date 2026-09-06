@@ -4,7 +4,4 @@ pydantic
 langgraph
 langchain
 langchain-core
-langchain-community
 python-dotenv
-sentence-transformers
-faiss-cpu

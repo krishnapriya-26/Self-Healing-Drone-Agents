@@ -1,59 +1,25 @@
 from pathlib import Path
-
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain_core.documents import Document
+import re
 
 
 class RAGAgent:
     """
-    Retrieval-Augmented Generation agent for the
-    Self-Healing Multi-Agent Drone Operations Platform.
+    Lightweight Retrieval-Augmented Generation agent.
 
-    The agent:
-    1. Reads drone failure knowledge from the knowledge folder.
-    2. Converts the knowledge into embeddings.
-    3. Stores the embeddings in a FAISS vector database.
-    4. Searches the knowledge base using a drone diagnosis.
+    Retrieves relevant drone failure knowledge from
+    local knowledge files using keyword-based similarity.
+
+    This version is optimized for low-memory cloud deployment.
     """
 
     def __init__(self):
 
-        # -------------------------------------------------
-        # Knowledge directory
-        # -------------------------------------------------
-
         self.knowledge_dir = Path("knowledge")
-
-        # -------------------------------------------------
-        # Load embedding model
-        # -------------------------------------------------
-
-        self.embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2"
-        )
-
-        # -------------------------------------------------
-        # Load knowledge documents
-        # -------------------------------------------------
-
         self.documents = self._load_documents()
 
-        # -------------------------------------------------
-        # Create vector database
-        # -------------------------------------------------
-
-        if self.documents:
-
-            self.vectorstore = FAISS.from_documents(
-                self.documents,
-                self.embeddings
-            )
-
-        else:
-
-            self.vectorstore = None
-
+        print(
+            f"RAG knowledge base loaded: {len(self.documents)} documents"
+        )
 
     # =====================================================
     # LOAD KNOWLEDGE
@@ -63,18 +29,11 @@ class RAGAgent:
 
         documents = []
 
-        # Check whether knowledge folder exists
-
         if not self.knowledge_dir.exists():
 
-            print(
-                "WARNING: knowledge folder not found."
-            )
+            print("WARNING: knowledge folder not found.")
 
             return documents
-
-
-        # Read all .txt files
 
         for file_path in self.knowledge_dir.glob("*.txt"):
 
@@ -86,14 +45,10 @@ class RAGAgent:
 
                 if text.strip():
 
-                    documents.append(
-                        Document(
-                            page_content=text,
-                            metadata={
-                                "source": file_path.name
-                            }
-                        )
-                    )
+                    documents.append({
+                        "content": text,
+                        "source": file_path.name
+                    })
 
             except Exception as error:
 
@@ -101,9 +56,45 @@ class RAGAgent:
                     f"Could not read {file_path}: {error}"
                 )
 
-
         return documents
 
+    # =====================================================
+    # TEXT PROCESSING
+    # =====================================================
+
+    def _keywords(self, text):
+
+        words = re.findall(
+            r"[a-zA-Z0-9]+",
+            text.lower()
+        )
+
+        stop_words = {
+            "the",
+            "is",
+            "a",
+            "an",
+            "and",
+            "or",
+            "of",
+            "to",
+            "in",
+            "for",
+            "with",
+            "on",
+            "may",
+            "be",
+            "can",
+            "this",
+            "that"
+        }
+
+        return {
+            word
+            for word in words
+            if word not in stop_words
+            and len(word) > 2
+        }
 
     # =====================================================
     # RETRIEVE KNOWLEDGE
@@ -114,19 +105,9 @@ class RAGAgent:
         """
         Retrieve the most relevant drone failure
         procedures from the knowledge base.
-
-        query can be either:
-            - a string
-            - a dictionary containing diagnosis/severity
         """
 
-        # -------------------------------------------------
-        # IMPORTANT FIX
-        # -------------------------------------------------
-        # HuggingFace embeddings require TEXT.
-        # Our diagnosis agent may return a dictionary.
-        # Convert the dictionary into a readable string.
-        # -------------------------------------------------
+        # Convert dictionary diagnosis to text
 
         if isinstance(query, dict):
 
@@ -145,65 +126,60 @@ class RAGAgent:
                 f"Severity: {severity}."
             )
 
-
-        # Make sure query is always a string
-
         query = str(query)
 
-
-        # -------------------------------------------------
-        # No vector database
-        # -------------------------------------------------
-
-        if self.vectorstore is None:
+        if not self.documents:
 
             return []
 
+        query_words = self._keywords(query)
 
-        # -------------------------------------------------
-        # Perform similarity search
-        # -------------------------------------------------
+        scored_documents = []
 
-        try:
+        for document in self.documents:
 
-            results = self.vectorstore.similarity_search(
-                query,
-                k=3
+            document_words = self._keywords(
+                document["content"]
             )
 
-        except Exception as error:
+            # Count matching keywords
 
-            print(
-                f"RAG search error: {error}"
+            matching_words = (
+                query_words &
+                document_words
             )
 
-            return []
+            score = len(matching_words)
 
+            scored_documents.append(
+                (
+                    score,
+                    document
+                )
+            )
 
-        # -------------------------------------------------
-        # Return useful text instead of raw objects
-        # -------------------------------------------------
+        # Highest relevance first
 
-        knowledge = []
+        scored_documents.sort(
+            key=lambda item: item[0],
+            reverse=True
+        )
 
-        for document in results:
+        # Return top 3 relevant documents
 
-            knowledge.append({
+        results = []
 
-                "content":
-                    document.page_content,
+        for score, document in scored_documents[:3]:
 
-                "source":
-                    document.metadata.get(
-                        "source",
-                        "unknown"
-                    )
+            if score > 0:
 
-            })
+                results.append({
+                    "content": document["content"],
+                    "source": document["source"],
+                    "relevance_score": score
+                })
 
-
-        return knowledge
-
+        return results
 
     # =====================================================
     # SEARCH ALIAS
@@ -211,23 +187,13 @@ class RAGAgent:
 
     def search(self, query):
 
-        """
-        Alternative method name for compatibility
-        with the workflow.
-        """
-
         return self.retrieve(query)
-
 
     # =====================================================
     # QUERY ALIAS
     # =====================================================
 
     def query(self, query):
-
-        """
-        Alternative query method.
-        """
 
         return self.retrieve(query)
 
@@ -250,9 +216,7 @@ if __name__ == "__main__":
         "severity": "HIGH"
     }
 
-    results = rag.retrieve(
-        test_query
-    )
+    results = rag.retrieve(test_query)
 
     print()
     print("Query:")
@@ -270,13 +234,16 @@ if __name__ == "__main__":
         ):
 
             print()
-            print(
-                f"Result {index}"
-            )
+            print(f"Result {index}")
 
             print(
                 "Source:",
                 result["source"]
+            )
+
+            print(
+                "Relevance:",
+                result["relevance_score"]
             )
 
             print(
@@ -285,9 +252,7 @@ if __name__ == "__main__":
 
     else:
 
-        print(
-            "No knowledge retrieved."
-        )
+        print("No knowledge retrieved.")
 
     print()
     print("=" * 60)
