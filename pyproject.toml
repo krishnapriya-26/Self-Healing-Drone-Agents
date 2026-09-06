@@ -15,5 +15,8 @@ dependencies = [
     "faiss-cpu"
 ]
 
+[tool.setuptools]
+packages = []
+
 [tool.fastapi]
 entrypoint = "api.main:api"
